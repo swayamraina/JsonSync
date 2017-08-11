@@ -1,4 +1,4 @@
-package main.com.swayamraina.JsonSync;
+package main.com.swayamraina.jsonsync;
 
 public class JsonElement {
 	
