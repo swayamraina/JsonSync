@@ -1,8 +1,9 @@
 package test.com.swayamraina.jsonsync;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -15,11 +16,9 @@ import main.com.swayamraina.jsonsync.JsonComparator;
 import main.com.swayamraina.jsonsync.JsonElement;
 
 public class JsonComparatorTest {
-	
-	JsonComparator jcomp = new JsonComparator();
 
 	@Test
-	public void testCompareLevelObjectHelper() {
+	public void testCompareLevelObjectHelper() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		Set<String> oldT = new HashSet<>();
 		oldT.add("id");
 		oldT.add("first name");
@@ -42,7 +41,7 @@ public class JsonComparatorTest {
 		diff.add(new JsonElement("full name", 1));
 		diff.add(new JsonElement("mobile no", 1));
 		
-		List<JsonElement> obtained = jcomp.compareLevelObjectHelper(oldT, newT);
+		List<JsonElement> obtained = (List<JsonElement>) getPrivateMethod("compareLevelObjectHelper").invoke(null, oldT, newT);
 		Assert.assertEquals(obtained.size(), diff.size());
 		for(int i=0; i<obtained.size(); i++) {
 			if(!diff.contains(obtained.get(i))) {
@@ -54,6 +53,12 @@ public class JsonComparatorTest {
 				fail("extra element");
 			}
 		}
+	}
+	
+	private Method getPrivateMethod(String name) throws NoSuchMethodException, SecurityException {
+		Method method = JsonComparator.class.getDeclaredMethod(name, Set.class, Set.class);
+		method.setAccessible(true);
+		return method;
 	}
 }
 
