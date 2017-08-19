@@ -25,6 +25,14 @@ public class JsonElement {
 		this.setElement(element);
 		this.setType(type);
 	}
+	
+	@Override
+	public boolean equals(Object other) {
+	    if(other == this) return true;
+	    if(!(other instanceof JsonElement)) return false;
+	    JsonElement tempJsonElement = (JsonElement) other;
+	    return (tempJsonElement.getElement().equals(this.getElement()) && tempJsonElement.getType()==this.getType()) ? true : false;
+	}
 }
 
 
