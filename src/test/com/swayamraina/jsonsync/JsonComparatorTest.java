@@ -82,5 +82,16 @@ public class JsonComparatorTest {
 		TestingUtility.assertSetEqual(expected, actual);
 	}
 	
+	@Test
+	public void testIsMultiLevelKey() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+		String jsonText = "{\"uuid\":\"12345\",\"name\":{\"first\":\"swayam\",\"last\":\"raina\"},\"levels\":{\"beginner\":\"1\",\"advanced\":\"2\"}}";
+		JsonObject json = new JsonTokenizer().tokenize(jsonText);
+		boolean expected1 = (boolean) TestingUtility.getPrivateMethod("isMultiLevelKey", JsonObject.class, String.class).invoke(null, json, "name");
+		assertEquals(expected1, true);
+		
+		boolean expected2 = (boolean) TestingUtility.getPrivateMethod("isMultiLevelKey", JsonObject.class, String.class).invoke(null, json, "uuid");
+		assertEquals(expected2, false);
+	}
+	
 }
 
