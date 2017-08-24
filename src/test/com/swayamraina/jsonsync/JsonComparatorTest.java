@@ -1,10 +1,8 @@
 package test.com.swayamraina.jsonsync;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -14,7 +12,6 @@ import org.junit.Test;
 
 import main.com.swayam.json.JsonObject;
 import main.com.swayam.json.JsonTokenizer;
-import main.com.swayamraina.jsonsync.JsonComparator;
 import main.com.swayamraina.jsonsync.JsonElement;
 
 public class JsonComparatorTest {
@@ -74,13 +71,15 @@ public class JsonComparatorTest {
 	}
 	
 	@Test
-	public void testGetMultiLevelKey() {
+	public void testGetMultiLevelKey() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		String jsonText = "{\"id\":\"12345\",\"name\":{\"first\":\"swayam\",\"last\":\"raina\"},\"levels\":{\"beginner\":\"1\",\"advanced\":\"2\"}}";
 		JsonObject json = new JsonTokenizer().tokenize(jsonText);
-		List<String> actual = new ArrayList<>();
+		Set<String> actual = new HashSet<>();
 		actual.add("name");
 		actual.add("levels");
-		
+		Set<String> expected = (Set<String>) TestingUtility.getPrivateMethod("getMultiLevelKeys", JsonObject.class).invoke(null, json);
+		assertEquals(expected.size(), actual.size());
+		TestingUtility.assertSetEqual(expected, actual);
 	}
 	
 }
