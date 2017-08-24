@@ -2,6 +2,7 @@ package main.com.swayamraina.jsonsync;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import main.com.swayam.json.JsonObject;
@@ -45,10 +46,25 @@ public class JsonComparator {
 	 * @param rootElement
 	 * @return
 	 */
-	private static List<String> getLevelKeys(JsonObject rootElement) {
-		List<String> keys = new ArrayList<>();
-		keys.addAll(rootElement.getJson().keySet());
-		return keys;
+	private static Set<String> getLevelKeys(JsonObject rootElement) {
+		return rootElement.getJson().keySet();
+	}
+	
+	
+	/**
+	 * This method creates a list of keys that have Json as corresponding value
+	 * 
+	 * @param rootElement
+	 * @return
+	 */
+	private static List<String> getMultiLevelKeys(JsonObject rootElement) {
+		List<String> multiLevelKeys = new ArrayList<>();
+		for(Map.Entry<String, Object> entry : rootElement.getJson().entrySet()) {
+			if(entry.getValue() instanceof JsonObject) {
+				multiLevelKeys.add(entry.getKey());
+			}
+		}
+		return multiLevelKeys;
 	}
 
 }
