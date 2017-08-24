@@ -49,15 +49,38 @@ public class JsonComparatorTest {
 	}
 	
 	@Test
-	public void testGetLevelKeys() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+	public void testGetLevelKeys1() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		String jsonText = "{\"id\":\"12345\",\"name\":{\"first\":\"swayam\",\"last\":\"raina\"}}";
 		JsonObject json = new JsonTokenizer().tokenize(jsonText);
-		List<String> actual = new ArrayList<>();
+		Set<String> actual = new HashSet<>();
 		actual.add("first");
 		actual.add("last");
-		List<String> expected = (List<String>) TestingUtility.getPrivateMethod("getLevelKeys", JsonObject.class).invoke(null, json.get("name"));
+		Set<String> expected = (Set<String>) TestingUtility.getPrivateMethod("getLevelKeys", JsonObject.class).invoke(null, json.get("name"));
 		assertEquals(expected.size(), actual.size());
-		TestingUtility.assertArrayEqual(expected, actual);
+		TestingUtility.assertSetEqual(expected, actual);
+	}
+	
+	@Test
+	public void testGetLevelKeys2() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+		String jsonText = "{\"id\":\"12345\",\"name\":{\"first\":\"swayam\",\"last\":\"raina\"},\"level\":\"advanced\"}";
+		JsonObject json = new JsonTokenizer().tokenize(jsonText);
+		Set<String> actual = new HashSet<>();
+		actual.add("id");
+		actual.add("name");
+		actual.add("level");
+		Set<String> expected = (Set<String>) TestingUtility.getPrivateMethod("getLevelKeys", JsonObject.class).invoke(null, json);
+		assertEquals(expected.size(), actual.size());
+		TestingUtility.assertSetEqual(expected, actual);
+	}
+	
+	@Test
+	public void testGetMultiLevelKey() {
+		String jsonText = "{\"id\":\"12345\",\"name\":{\"first\":\"swayam\",\"last\":\"raina\"},\"levels\":{\"beginner\":\"1\",\"advanced\":\"2\"}}";
+		JsonObject json = new JsonTokenizer().tokenize(jsonText);
+		List<String> actual = new ArrayList<>();
+		actual.add("name");
+		actual.add("levels");
+		
 	}
 	
 }

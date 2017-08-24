@@ -4,6 +4,7 @@ import static org.junit.Assert.fail;
 
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Set;
 
 import main.com.swayamraina.jsonsync.JsonComparator;
 
@@ -25,6 +26,12 @@ public class TestingUtility {
 			if(!expected.contains(actual.get(i))) {
 				fail("extra element");
 			}
+		}
+	}
+	
+	public static <T> void assertSetEqual(Set<T> expected, Set<T> actual) {
+		if(!actual.containsAll(expected) || !expected.containsAll(actual)) {
+			fail("extra element");
 		}
 	}
 	
