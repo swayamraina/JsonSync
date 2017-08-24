@@ -67,6 +67,18 @@ public class JsonComparator {
 		}
 		return multiLevelKeys;
 	}
+	
+	
+	/**
+	 * Utility method to check if a given key is multi-level or not
+	 * 
+	 * @param json
+	 * @param key
+	 * @return
+	 */
+	private static boolean isMultiLevelKey(JsonObject json, String key) {
+		return (json.get(key) instanceof JsonObject) ? true : false;
+	}
 
 }
 
