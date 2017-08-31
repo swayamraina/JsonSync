@@ -94,11 +94,10 @@ public class JsonComparator {
 	private boolean isMultiLevelKey(JsonObject json, String key) {
 		return (json.get(key) instanceof JsonObject) ? true : false;
 	}
-
     
     
     private String createElementPath(String key) {
-    	return getBasePath().toString() + DELIMITER + key;
+    	return (getBasePath().length() > 0) ? (getBasePath().toString() + DELIMITER + key) : key;
     }
 
 
