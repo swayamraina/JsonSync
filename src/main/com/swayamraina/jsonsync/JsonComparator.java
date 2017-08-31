@@ -17,13 +17,13 @@ public class JsonComparator {
 	
 	private static final char DELIMITER = '>';
 	
-	private Queue<JsonObject> keyComparisonQueue;
+	private Queue<Pair<JsonObject>> keyComparisonQueue;
 	private List<JsonElement> updatedKeys;
 	private StringBuilder basePath;
 	
 	
 	public JsonComparator() {
-		this.keyComparisonQueue = new LinkedList<>();
+		this.keyComparisonQueue = new LinkedList<Pair<JsonObject>>();
 		this.updatedKeys = new ArrayList<>();
 		this.basePath = new StringBuilder();
 	}
