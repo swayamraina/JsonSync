@@ -1,29 +1,33 @@
 package main.com.swayamraina.jsonsync;
 
-public class Pair<T> {
+public class Pair<U,V> {
 	
-	private T first;
-	private T second;
+	private U first;
+	private V second;
 	
-	public Pair(T first, T second) {
+	public Pair(U first, V second) {
 		this.setFirst(first);
 		this.setSecond(second);
 	}
 	
-	public T getSecond() {
+	public V getSecond() {
 		return second;
 	}
 	
-	public void setSecond(T second) {
+	public void setSecond(V second) {
 		this.second = second;
 	}
 	
-	public T getFirst() {
+	public U getFirst() {
 		return first;
 	}
 	
-	public void setFirst(T first) {
+	public void setFirst(U first) {
 		this.first = first;
+	}
+	
+	public boolean isEmptyPair() {
+		return (first==null && second==null) ? true : false;
 	}
 }
 
