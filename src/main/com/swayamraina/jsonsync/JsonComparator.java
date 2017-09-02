@@ -15,15 +15,19 @@ public class JsonComparator {
 	private static final int INSERT = 1;
 	private static final int DELETE = 2;
 	
-	private static final char DELIMITER = '>';
+	private static final String DELIMITER = ">";
 	
-	private Queue<Pair<JsonObject>> keyComparisonQueue;
-	private List<JsonElement> updatedKeys;
+	private static final String EMPTY_STRING = "";
+	private static final Set<String> EMPTY_SET = new HashSet<>();
+	private static final Pair<String, Pair<JsonObject, JsonObject>> EMPTY_PAIR = new Pair<>(EMPTY_STRING, new Pair<>(null,null));
+	
+	private Queue<Pair<String, Pair<JsonObject, JsonObject>>> keyComparisonQueue;
+	public List<JsonElement> updatedKeys;
 	private StringBuilder basePath;
 	
 	
 	public JsonComparator() {
-		this.keyComparisonQueue = new LinkedList<Pair<JsonObject>>();
+		this.keyComparisonQueue = new LinkedList<>();
 		this.updatedKeys = new ArrayList<>();
 		this.basePath = new StringBuilder();
 	}
@@ -63,7 +67,7 @@ public class JsonComparator {
 	 * @return
 	 */
 	private Set<String> getLevelKeys(JsonObject rootElement) {
-		return rootElement.getJson().keySet();
+		return (rootElement!=null) ? rootElement.getJson().keySet() : EMPTY_SET; 
 	}
 	
 	
@@ -95,15 +99,44 @@ public class JsonComparator {
 		return (json.get(key) instanceof JsonObject) ? true : false;
 	}
     
-    
+
+	/**
+	 * This method receives a JSON key and returns the path to the key
+	 * 
+	 * @param key
+	 * @return
+	 */
     private String createElementPath(String key) {
-    	return (getBasePath().length() > 0) ? (getBasePath().toString() + DELIMITER + key) : key;
+    	return (basePath.length() > 0) ? (basePath.toString() + DELIMITER + key) : key;
     }
-
-
-	public StringBuilder getBasePath() {
-		return basePath;
-	}
+    
+    
+    /**
+     * This method updates the base path of the JSON object
+     * 
+     */
+    private void updateBasePath(String path) {
+    	basePath.append(DELIMITER);
+    	basePath.append(path);
+    }
+    
+    
+    /**
+     * This method accepts the path to the key in JSON and
+     * returns the data type of the value
+     * 
+     * @param json
+     * @param path
+     * @return
+     */
+    private static String getDataType(final JsonObject json, final String path, String key) {
+    	String[] steps = path.split(DELIMITER);
+    	JsonObject value = json;
+    	for(int i=1; i<steps.length; i++) {
+    		value = (JsonObject)value.get(steps[i]);
+    	}
+    	return value.get(key).getClass().getSimpleName();
+    }
     
 }
 
