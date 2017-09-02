@@ -36,13 +36,13 @@ public class JsonComparatorTest {
 		newT.add("mobile no");
 		
 		List<JsonElement> expected = new ArrayList<>();
-		expected.add(new JsonElement("id", DELETE));
-		expected.add(new JsonElement("first name", DELETE));
-		expected.add(new JsonElement("last name", DELETE));
-		expected.add(new JsonElement("mobile", DELETE));
-		expected.add(new JsonElement("osis id", INSERT));
-		expected.add(new JsonElement("full name", INSERT));
-		expected.add(new JsonElement("mobile no", INSERT));
+		expected.add(new JsonElement("id", DELETE, "String"));
+		expected.add(new JsonElement("first name", DELETE, "String"));
+		expected.add(new JsonElement("last name", DELETE, "String"));
+		expected.add(new JsonElement("mobile", DELETE, "String"));
+		expected.add(new JsonElement("osis id", INSERT, "String"));
+		expected.add(new JsonElement("full name", INSERT, "String"));
+		expected.add(new JsonElement("mobile no", INSERT, "String"));
 		
 		JsonComparator comparator = new JsonComparator();
 		
@@ -101,6 +101,22 @@ public class JsonComparatorTest {
 		
 		boolean expected2 = (boolean) TestingUtility.getPrivateMethod("isMultiLevelKey", JsonObject.class, String.class).invoke(comparator, json, "uuid");
 		assertEquals(expected2, false);
+	}
+	
+	@Test
+	public void testGetDataType() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+		String jsonText = "{\"name\":{\"first_name\":{\"initial\":{\"f\":\"S\",\"l\":\"R\"},\"complete\":\"swayam\"},\"last_name\":\"raina\"},\"levels\":{\"beginner\":\"1\",\"advanced\":\"2\"}}";
+		JsonObject json = new JsonTokenizer().tokenize(jsonText);
+		
+		String path1 = ">name>first_name";
+		String key1 = "complete";
+		String expected1 = (String) TestingUtility.getPrivateMethod("getDataType", JsonObject.class, String.class, String.class).invoke(null, json, path1, key1);
+		assertEquals(expected1, "String");
+		
+		String path2 = ">name>first_name>";
+		String key2 = "initial";
+		String expected2 = (String) TestingUtility.getPrivateMethod("getDataType", JsonObject.class, String.class, String.class).invoke(null, json, path2, key2);
+		assertEquals(expected2, "JsonObject");
 	}
 	
 }
