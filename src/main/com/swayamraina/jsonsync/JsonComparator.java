@@ -106,37 +106,37 @@ public class JsonComparator {
 	 * @param key
 	 * @return
 	 */
-    private String createElementPath(String key) {
-    	return (basePath.length() > 0) ? (basePath.toString() + DELIMITER + key) : key;
-    }
-    
-    
-    /**
-     * This method updates the base path of the JSON object
-     * 
-     */
-    private void updateBasePath(String path) {
-    	basePath.append(DELIMITER);
-    	basePath.append(path);
-    }
-    
-    
-    /**
-     * This method accepts the path to the key in JSON and
-     * returns the data type of the value
-     * 
-     * @param json
-     * @param path
-     * @return
-     */
-    private static String getDataType(final JsonObject json, final String path, String key) {
-    	String[] steps = path.split(DELIMITER);
-    	JsonObject value = json;
-    	for(int i=1; i<steps.length; i++) {
-    		value = (JsonObject)value.get(steps[i]);
+    	private String createElementPath(String key) {
+    		return (basePath.length() > 0) ? (basePath.toString() + DELIMITER + key) : key;
     	}
-    	return value.get(key).getClass().getSimpleName();
-    }
+    
+    
+        /**
+     	 * This method updates the base path of the JSON object
+     	 * 
+     	 */
+    	private void updateBasePath(String path) {
+    		basePath.append(DELIMITER);
+    		basePath.append(path);
+    	}
+    
+    
+    	/**
+     	 * This method accepts the path to the key in JSON and
+     	 * returns the data type of the value
+     	 * 
+     	 * @param json
+     	 * @param path
+     	 * @return
+     	 */
+    	private static String getDataType(final JsonObject json, final String path, String key) {
+    		String[] steps = path.split(DELIMITER);
+    		JsonObject value = json;
+    		for(int i=1; i<steps.length; i++) {
+	    		value = (JsonObject)value.get(steps[i]);
+    		}
+    		return value.get(key).getClass().getSimpleName();
+    	}
     
 }
 
