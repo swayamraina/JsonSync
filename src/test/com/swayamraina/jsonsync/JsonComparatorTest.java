@@ -36,13 +36,13 @@ public class JsonComparatorTest {
 		newT.add("mobile no");
 		
 		List<JsonElement> expected = new ArrayList<>();
-		expected.add(new JsonElement("id", DELETE, "String"));
-		expected.add(new JsonElement("first name", DELETE, "String"));
-		expected.add(new JsonElement("last name", DELETE, "String"));
-		expected.add(new JsonElement("mobile", DELETE, "String"));
-		expected.add(new JsonElement("osis id", INSERT, "String"));
-		expected.add(new JsonElement("full name", INSERT, "String"));
-		expected.add(new JsonElement("mobile no", INSERT, "String"));
+		expected.add(new JsonElement("id", DELETE));
+		expected.add(new JsonElement("first name", DELETE));
+		expected.add(new JsonElement("last name", DELETE));
+		expected.add(new JsonElement("mobile", DELETE));
+		expected.add(new JsonElement("osis id", INSERT));
+		expected.add(new JsonElement("full name", INSERT));
+		expected.add(new JsonElement("mobile no", INSERT));
 		
 		JsonComparator comparator = new JsonComparator();
 		
@@ -104,20 +104,56 @@ public class JsonComparatorTest {
 	}
 	
 	@Test
+	public void testCompare1() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+		String jsonText1 = "{\"uuid\":\"12345\",\"name\":{\"first\":\"swayam\",\"last\":\"raina\"},\"levels\":{\"beginner\":\"1\",\"advanced\":\"2\"}}";
+		JsonObject json1 = new JsonTokenizer().tokenize(jsonText1);
+		String jsonText2 = "{\"uuid\":\"12345\",\"name\":{\"first_name\":\"swayam\",\"last_name\":\"raina\"},\"levels\":{\"beginner\":\"1\",\"advanced\":\"2\"}}";
+		JsonObject json2 = new JsonTokenizer().tokenize(jsonText2);
+		
+		List<JsonElement> expected = new ArrayList<>();
+		expected.add(new JsonElement(">name>first", DELETE));
+		expected.add(new JsonElement(">name>first_name", INSERT, "String"));
+		expected.add(new JsonElement(">name>last", DELETE));
+		expected.add(new JsonElement(">name>last_name", INSERT, "String"));
+		
+		JsonComparator comparator = new JsonComparator();
+		TestingUtility.getPrivateMethod("compare", JsonObject.class, JsonObject.class).invoke(comparator, json1, json2);
+		TestingUtility.assertArrayEqual(expected, comparator.updatedKeys);
+	}
+	
+	@Test
+	public void testCompare2() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+		String jsonText1 = "{\"uuid\":\"12345\",\"name\":{\"first_name\":\"swayam\",\"last\":\"raina\"},\"levels\":{\"beginner\":\"1\",\"advanced\":\"2\"}}";
+		JsonObject json1 = new JsonTokenizer().tokenize(jsonText1);
+		String jsonText2 = "{\"uuid\":\"12345\",\"name\":{\"first_name\":{\"initial\":\"SR\",\"complete\":\"swayam\"},\"last_name\":\"raina\"},\"levels\":{\"beginner\":\"1\",\"advanced\":\"2\"}}";
+		JsonObject json2 = new JsonTokenizer().tokenize(jsonText2);
+		
+		List<JsonElement> expected = new ArrayList<>();
+		expected.add(new JsonElement(">name>first_name", DELETE));
+		expected.add(new JsonElement(">name>first_name", INSERT, "JsonObject"));
+		expected.add(new JsonElement(">name>last", DELETE));
+		expected.add(new JsonElement(">name>last_name", INSERT, "String"));
+		
+		JsonComparator comparator = new JsonComparator();
+		TestingUtility.getPrivateMethod("compare", JsonObject.class, JsonObject.class).invoke(comparator, json1, json2);
+		TestingUtility.assertArrayEqual(expected, comparator.updatedKeys);
+	}
+	
+	@Test
 	public void testGetDataType() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		String jsonText = "{\"name\":{\"first_name\":{\"initial\":{\"f\":\"S\",\"l\":\"R\"},\"complete\":\"swayam\"},\"last_name\":\"raina\"},\"levels\":{\"beginner\":\"1\",\"advanced\":\"2\"}}";
 		JsonObject json = new JsonTokenizer().tokenize(jsonText);
 		
-		String path1 = ">name>first_name";
-		String key1 = "complete";
-		String expected1 = (String) TestingUtility.getPrivateMethod("getDataType", JsonObject.class, String.class, String.class).invoke(null, json, path1, key1);
+		String path1 = ">name>first_name>complete";
+		String expected1 = (String) TestingUtility.getPrivateMethod("getDataType", JsonObject.class, String.class).invoke(null, json, path1);
 		assertEquals(expected1, "String");
 		
-		String path2 = ">name>first_name>";
-		String key2 = "initial";
-		String expected2 = (String) TestingUtility.getPrivateMethod("getDataType", JsonObject.class, String.class, String.class).invoke(null, json, path2, key2);
+		String path2 = ">name>first_name>initial";
+		String expected2 = (String) TestingUtility.getPrivateMethod("getDataType", JsonObject.class, String.class).invoke(null, json, path2);
 		assertEquals(expected2, "JsonObject");
 	}
+	
+	
 	
 }
 
