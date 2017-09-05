@@ -138,8 +138,8 @@ public class JsonComparator {
 	}
 	
 	
-	private static boolean sameDataType(JsonObject json1, JsonObject json2, String path) {
-		return (getDataType(json1, path).equals(getDataType(json2, path))) ? true : false;
+	private static boolean sameDataType(JsonObject json1, JsonObject json2, String key) {
+		return (json1.get(key).getClass().getName().equals(json2.get(key).getClass().getName())) ? true : false;
 	}
 
 	
@@ -167,7 +167,7 @@ public class JsonComparator {
 			Set<String> newKeys = this.getLevelKeys(pair.getSecond().getSecond());
 			for (String key : oldKeys) {
 				String path = createElementPath(key);
-				if (!newKeys.contains(key) || !sameDataType(oldJson, newJson, path)) {
+				if (!newKeys.contains(key) || !sameDataType(pair.getSecond().getFirst(), pair.getSecond().getSecond(), key)) {
 					updatedKeys.add(new JsonElement(path, DELETE));
 				} else if (isMultiLevelKey(oldJson, key) && isMultiLevelKey(newJson, key)) {
 					Pair<JsonObject, JsonObject> jsonPair = new Pair<>((JsonObject) oldJson.get(key), (JsonObject) newJson.get(key));
@@ -175,7 +175,7 @@ public class JsonComparator {
 				}
 			}
 			for (String key : newKeys) {
-				if (!oldKeys.contains(key) || !sameDataType(oldJson, newJson, key)) {
+				if (!oldKeys.contains(key) || !sameDataType(pair.getSecond().getFirst(), pair.getSecond().getSecond(), key)) {
 					String path = createElementPath(key);
 					updatedKeys.add(new JsonElement(path, INSERT, getDataType(newJson, path)));
 				}
