@@ -153,7 +153,22 @@ public class JsonComparatorTest {
 		assertEquals(expected2, "JsonObject");
 	}
 	
-	
+	@Test
+	public void testSameDataType() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+		String jsonText1 = "{\"uuid\":\"12345\",\"name\":{\"first_name\":\"swayam\"},\"levels\":{\"beginner\":\"1\",\"advanced\":\"2\"}}";
+		JsonObject json1 = new JsonTokenizer().tokenize(jsonText1);
+		String jsonText2 = "{\"uuid\":\"12345\",\"name\":{\"first_name\":{\"initial\":\"SR\",\"complete\":\"swayam\"}},\"levels\":{\"beginner\":\"1\",\"advanced\":\"2\"}}";
+		JsonObject json2 = new JsonTokenizer().tokenize(jsonText2);
+		
+		boolean expected;
+		String key;
+		key = "name";
+		expected = (boolean) TestingUtility.getPrivateMethod("sameDataType", JsonObject.class, JsonObject.class, String.class).invoke(null, json1, json2, key);
+		assertEquals(expected, true);
+		key = "first_name";
+		expected = (boolean) TestingUtility.getPrivateMethod("sameDataType", JsonObject.class, JsonObject.class, String.class).invoke(null, json1.get("name"), json2.get("name"), key);
+		assertEquals(expected, false);
+	}
 	
 }
 
