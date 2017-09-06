@@ -72,7 +72,7 @@ public class JsonComparator {
 
 	
 	/**
-	 * This method creates a list of keys that have Json as corresponding value
+	 * This method creates a list of keys that have JSON as corresponding value
 	 * 
 	 * @param rootElement
 	 * @return
@@ -138,13 +138,22 @@ public class JsonComparator {
 	}
 	
 	
+	/**
+	 * This method compares the data types of the two JSON values
+	 * and returns if both the values have same data type or not
+	 * 
+	 * @param json1
+	 * @param json2
+	 * @param key
+	 * @return
+	 */
 	private static boolean sameDataType(JsonObject json1, JsonObject json2, String key) {
 		return (json1.get(key).getClass().getName().equals(json2.get(key).getClass().getName())) ? true : false;
 	}
 
 	
 	/**
-	 * This method is responsible for comparing the two json objects and
+	 * This method is responsible for comparing the two JSON objects and
 	 * generating the list of keys to be updated in the data files.
 	 * 
 	 * @param oldJson
